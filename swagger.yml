@@ -1,0 +1,292 @@
+openapi: "3.0.0"
+info:
+  version: "0.0.1"
+  title: jobidium-backend
+servers:
+  - url: https://backend.jobidium.com/v1
+security:
+  - ApiKeyAuth: []
+paths:
+  /jobs:
+    post:
+      description: Get jobs by search.
+      operationId: getJobs
+      x-eov-operation-handler: jobs
+      parameters:
+        - in: query
+          name: skipRequestedCount
+          schema:
+            type: boolean
+          required: false
+          description: Numeric ID of the user to get
+      requestBody:
+        $ref: "#/components/requestBodies/jobsRequestBody"
+      responses:
+        "200":
+          description: Scraped jobs list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobSearchResult"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /count:
+    post:
+      description: Get the result count by the search specifications.
+      operationId: getCount
+      x-eov-operation-handler: count
+      requestBody:
+        $ref: "#/components/requestBodies/countRequestBody"
+      responses:
+        "200":
+          description: Count of the stored results by the search specifications.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobSearchCountResult"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /scrape-progress:
+    post:
+      description: Starts the scraper if the status is inProgress else if complete then do nothing.
+      operationId: getScrapeProgress
+      x-eov-operation-handler: scrape-progress
+      requestBody:
+        $ref: "#/components/requestBodies/scrapeProgressRequestBody"
+      responses:
+        "200":
+          description: Status of the last or current scraping.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobSearchProgressResult"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /search-task-titles:
+    post:
+      description: Get search task titles by search.
+      operationId: getSearchTaskTitles
+      x-eov-operation-handler: search-task-titles
+      requestBody:
+        $ref: "#/components/requestBodies/searchTaskTitlesRequestBody"
+      responses:
+        "200":
+          description: Job search tasks list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/searchTaskTitlesResult"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  requestBodies:
+    jobsRequestBody:
+      description: A JSON object for reusable request body containing the details of scraped jobs
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/JobSearchResultRequest"
+    countRequestBody:
+      description: A JSON object for reusable request body containing the details of count
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/JobSearchCount"
+    scrapeProgressRequestBody:
+      description: A JSON object for reusable request body containing the details of progress
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/JobSearchProgress"
+    searchTaskTitlesRequestBody:
+      description: A JSON object for reusable request body containing the details of search tasks
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SearchTaskTitlesResultRequest"
+  schemas:
+    JobSearchResultRequest:
+      type: object
+      required:
+        - siteIds
+        - title
+        - location
+        - options
+      properties:
+        siteIds:
+          type: array
+          items:
+            type: string
+            enum: [linkedin, no_fluff_jobs, profession]
+        title:
+          type: string
+        location:
+          type: string
+          enum: [szeged, budapest]
+        options:
+          type: object
+          required:
+            - remote
+          properties:
+            remote:
+              type: boolean
+        skip:
+          type: number
+        limit:
+          type: number
+    JobSearchResult:
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/Job"
+    JobSearchCount:
+      type: object
+      required:
+        - siteIds
+        - title
+        - location
+        - options
+      properties:
+        siteIds:
+          type: array
+          items:
+            type: string
+            enum: [linkedin, no_fluff_jobs, profession]
+        title:
+          type: string
+        location:
+          type: string
+          enum: [szeged, budapest]
+        options:
+          type: object
+          required:
+            - remote
+          properties:
+            remote:
+              type: boolean
+    JobSearchCountResult:
+      properties:
+        jobsCount:
+          type: number
+    JobSearchProgress:
+      type: object
+      required:
+        - siteIds
+        - title
+        - location
+        - options
+      properties:
+        siteIds:
+          type: array
+          items:
+            type: string
+            enum: [linkedin, no_fluff_jobs, profession]
+        title:
+          type: string
+        location:
+          type: string
+          enum: [szeged, budapest]
+        options:
+          type: object
+          required:
+            - remote
+          properties:
+            remote:
+              type: boolean
+    JobSearchProgressResult:
+      properties:
+        status:
+          type: string
+          enum: [inProgress, completed]
+    Job:
+      required:
+        - company
+        - location
+        - title
+        - url
+        - postedAt
+        - source
+      properties:
+        company:
+          type: string
+        location:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        source:
+          type: string
+          enum: [linkedin, no_fluff_jobs, profession]
+    SearchTaskTitlesResultRequest:
+      type: object
+      required:
+        - siteIds
+        - title
+        - location
+        - options
+      properties:
+        siteIds:
+          type: array
+          items:
+            type: string
+            enum: [linkedin, no_fluff_jobs, profession]
+        title:
+          type: string
+        location:
+          type: string
+          enum: [szeged, budapest]
+        options:
+          type: object
+          required:
+            - remote
+          properties:
+            remote:
+              type: boolean
+        skip:
+          type: number
+        limit:
+          type: number
+    searchTaskTitlesResult:
+      required:
+        - searchTaskTitles
+      properties:
+        searchTaskTitles:
+          type: array
+          items:
+            type: string
+    Error:
+      required:
+        - message
+      properties:
+        message:
+          type: string
