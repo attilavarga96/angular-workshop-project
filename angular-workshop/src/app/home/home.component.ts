@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) { }
 
   ngOnInit(): void {
-    this.backendService.getJobs(['linkedin'], 'software developer', 'szeged', 0, 10).subscribe(result => {
+    this.backendService.getJobs(['linkedin', 'profession'], 'software developer', 'szeged', 0, 10).subscribe(result => {
       console.log('RESULT', result);
       this.jobs = result.jobs;
     });
