@@ -1,3 +1,4 @@
+Előkövetelmények:  
 nvm install 16.13.2  
 nvm use 16.13.2  
 
