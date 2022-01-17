@@ -3,7 +3,7 @@ info:
   version: "0.0.1"
   title: jobidium-backend
 servers:
-  - url: https://backend.jobidium.com/v1
+  - url: https://angular-workshop-backend-vv7dx7beaq-lz.a.run.app/v1
 security:
   - ApiKeyAuth: []
 paths:
