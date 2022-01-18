@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  BACKEND_URL: 'http://localhost:9091/v1',
-  BACKEND_API_KEY: '12345',
+  BACKEND_URL: 'https://angular-workshop-backend-vv7dx7beaq-lz.a.run.app/v1', // 'http://localhost:9091/v1',
+  BACKEND_API_KEY: 'AngularWorkshop8' // '12345',
 };
 
 /*

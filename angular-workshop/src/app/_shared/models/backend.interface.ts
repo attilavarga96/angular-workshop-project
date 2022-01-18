@@ -8,3 +8,8 @@ export enum JobidiumLocations {
   SZEGED = 'szeged',
   BUDAPEST = 'budapest'
 };
+
+export interface RequestBodyForJobs {
+  title: string;
+  location: string;
+}
