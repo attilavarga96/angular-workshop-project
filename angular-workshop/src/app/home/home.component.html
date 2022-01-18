@@ -1,4 +1,16 @@
 <p>home works!</p>
 <div class="content">
-  <mat-card *ngFor="let job of jobs; let i = index">{{ job.title | uppercase }}</mat-card>
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>Search title</mat-label>
+    <input matInput type="text" [(ngModel)]="searchTitle">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="startSearch()">Search</button>
+  <mat-card class="job-card" *ngFor="let job of jobs; let i = index">
+    {{ job.title | uppercase }}<br>
+    <img class="logo" [src]="getJobSourceImagePath(job.source)">
+    <img class="logo" [src]="job.imageSource"><br>
+    {{ job.company }}<br>
+    {{ job.postedAt | date: 'YY/MM/dd' }}<br>
+    <button *ngIf="job.comment" mat-raised-button color="primary" (click)="navigateToDescription(job.comment)">Description</button>
+  </mat-card>
 </div>
